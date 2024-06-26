@@ -774,7 +774,7 @@ class API:
         try:
             if Parser.output_filename:
                 self.__mPrinter.print("Opening file {} for writing".format(Parser.output_filename), Level.INFO)
-                l_file = open(Parser.output_filename, p_filemode.value)
+                l_file = open(Parser.output_filename, p_filemode.value, encoding='utf-8')
             else:
                 l_file = sys.stdout
 
@@ -4021,6 +4021,9 @@ class API:
 
     def report_bsc(self): 
         if Parser.report_bsc_local_only:
+            if not SQLite.verify_database_exists():
+                self.__mPrinter.print("Database does not exist. Run without -rblo argument", Level.ERROR)
+                return
             self.__print_bsc_report()
             return
 
