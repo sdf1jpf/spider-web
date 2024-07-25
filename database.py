@@ -735,6 +735,50 @@ class SQLite():
                     AllIssues.remedial_actions,
                     AllIssues.remedial_procedure,
                     AllIssues.lookup_id
+
+                UNION
+
+                SELECT 
+                    WebsiteSDG.group_name,
+                    Scans.profile_name, 
+                    Scans.target_url, 
+                    'Compliant' AS name,
+                    '' AS cvss_value,
+                    '' AS cvss_severity,
+                    SUBSTR(DevSource.tag,13,100) as dev_source,
+                    SUBSTR(max(Scans.initiated_date),1,10) as scan_date,
+                    max(Scans.id) as scan_id,
+                    ProfileAVS.avs_code,
+                    '' AS state,
+                    '' AS first_seen,
+                    '' AS remedial_actions,
+                    '' AS remedial_procedure,
+                    '' AS lookup_id,
+                    '' AS description,
+                    '' AS impact,
+                    '' as last_seen
+                FROM
+                    Scans
+                    JOIN WebsiteOnBsc ON Scans.website_id = WebsiteOnBsc.website_id
+                    LEFT JOIN TrackedIssues ON Scans.profile_name = TrackedIssues.profile_name
+                    LEFT JOIN WebsiteSDG ON Scans.website_id = WebsiteSDG.website_id
+                    LEFT JOIN DevSource ON Scans.profile_id = DevSource.profile_id
+                    LEFT JOIN ExcludeFromReports ON Scans.profile_id = ExcludeFromReports.profile_id
+                    LEFT JOIN ProfileAVS ON Scans.profile_id = ProfileAVS.profile_id
+                WHERE 
+                    TrackedIssues.scan_id IS NULL
+                    AND ExcludeFromReports.profile_id IS NULL
+                    AND Scans.profile_name NOT LIKE 'Product Test%'
+                GROUP BY 
+                    WebsiteSDG.group_name,
+                    Scans.profile_name, 
+                    Scans.target_url, 
+                    TrackedIssues.name,
+                    TrackedIssues.cvss_value,
+                    TrackedIssues.cvss_severity,
+                    DevSource.tag,
+                    scan_id
+                ORDER BY WebsiteSDG.group_name, Scans.profile_name
             """
             return SQLite.__execute_query(l_connection, l_query)
         except:

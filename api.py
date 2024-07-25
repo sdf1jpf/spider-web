@@ -779,7 +779,7 @@ class API:
                 l_file = sys.stdout
 
             self.__mPrinter.print("Writing {} rows to {}".format(len(p_data), l_file.name), Level.INFO)
-            l_csv_writer = csv.writer(l_file, quoting=csv.QUOTE_ALL, lineterminator="\n")
+            l_csv_writer = csv.writer(l_file, quoting=csv.QUOTE_ALL, lineterminator="\n", escapechar="\\")
             l_csv_writer.writerow(p_header)
             l_csv_writer.writerows(p_data)
             self.__mPrinter.print("Wrote {} rows to {}".format(len(p_data), l_file.name), Level.INFO)
