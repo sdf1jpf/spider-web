@@ -4011,11 +4011,13 @@ class API:
         l_results = SQLite.select_scorecard_results()
         self.__print_scorecard_csv(l_results)
 
-        l_filename = Parser.output_filename
+        l_file = Parser.output_filename
+        l_filepath, l_filename = os.path.split(l_file)
         l_groups = SQLite.select_groups()
         for (l_code, l_name) in l_groups:
             l_results = SQLite.select_group_results(l_code)
-            Parser.output_filename = f"{l_code}-{l_filename}"
+            new_filename = f"{l_code}-{l_filename}"
+            Parser.output_filename = os.path.join(l_filepath, new_filename)
             self.__print_scorecard_csv(l_results)
 
 
