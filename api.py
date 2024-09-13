@@ -3924,7 +3924,9 @@ class API:
     # ------------------------------------------------------------
     def __get_scorecard_header(self) -> list:
         return ["Group Name", "Profile Name", "Target URL", "Issue Name", "CVSS Score",
-                "Severity", "Dev Source", "Scan Date", "Scan Id"]
+                "Severity", "Dev Source", "Scan Date", "Scan Id","AVS", "State", 
+                "First Seen Date", "Remedial Actions", "Remedial Procedure", 
+                "Lookup Id", "Description", "Impact", "Last Seen Date",]
 
     def __print_scorecard_csv(self, p_rows: dict) -> None:
         try:
@@ -3938,8 +3940,6 @@ class API:
         try:
             self.__mPrinter.print("Printing all issues results in CSV format", Level.INFO)
             l_header: list = self.__get_scorecard_header()
-            l_header.extend(["AVS", "State", "First Seen Date", "Remedial Actions", "Remedial Procedure", "Lookup Id",
-                             "Description", "Impact", "Last Seen Date",])
             self.__write_csv(l_header, p_rows)
         except Exception as e:
             self.__mPrinter.print("__print_scorecard_all_issues_csv() - {0}".format(str(e)), Level.ERROR)
