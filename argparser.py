@@ -100,9 +100,11 @@ class Parser:
         Parser.get_scans = p_args.get_scans
         Parser.get_scheduled_scans = p_args.get_scheduled_scans
         Parser.get_scans_by_website = p_args.get_scans_by_website
+        Parser.get_scans_by_state = p_args.get_scans_by_state
         Parser.website_url = p_args.website_url
         Parser.target_url = p_args.target_url
         Parser.sort_direction = p_args.sort_direction
+        Parser.scan_state = p_args.scan_state
 
         # Scan Profiles
         Parser.get_scan_profiles = p_args.get_scan_profiles

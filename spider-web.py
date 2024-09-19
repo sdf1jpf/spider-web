@@ -9,7 +9,7 @@ import config as __config
 from argparse import RawTextHelpFormatter
 import argparse
 
-l_version = '1.1.20'
+l_version = '1.1.21'
 
 def print_version() -> None:
     if Parser.verbose:
@@ -61,7 +61,7 @@ def run_main_program():
         Parser.get_roles or Parser.get_permissions or Parser.get_role or Parser.delete_team_member or \
         Parser.get_unused_accounts or Parser.get_teams or Parser.get_issues or Parser.download_issues or \
         Parser.report_bsc or Parser.get_unpatched_issues or Parser.disable_team_member or \
-        Parser.disable_team_members or Parser.auto_onboard:
+        Parser.disable_team_members or Parser.auto_onboard or Parser.get_scans_by_state:
             l_api = API(p_parser=Parser)
     else:
         lArgParser.print_usage()
@@ -336,6 +336,14 @@ def run_main_program():
         l_api.get_scans_by_website()
         exit(0)
 
+    if Parser.get_scans_by_state:
+        if not Parser.scan_state:
+            lArgParser.print_usage()
+            Printer.print("Required argument -sstate, --scan-state not provided", Level.ERROR, Force.FORCE, LINES_BEFORE, LINES_AFTER)
+            exit(0)
+        l_api.get_scans_by_state()
+        exit(0)
+
     if Parser.get_scan_profile:
         if not Parser.scan_profile_id and not Parser.scan_profile_name:
             lArgParser.print_usage()
@@ -559,10 +567,17 @@ if __name__ == '__main__':
     l_scans_group.add_argument('-sgsbw', '--get-scans-by-website',
                                  help='List scans by website and exit. Output fetched in pages. Requires either -wurl, --website-url or -turl, --target-url or both. Sort by Initiated Date with -sd, --sort-direction. . Default sort is descending.',
                                  action='store_true')
-
+    l_scans_group.add_argument('-sgsbs', '--get-scans-by-state',
+                                 help='List scans by state and exit. Output fetched in pages. Requires either -sstate, --scan-state.',
+                                 action='store_true')
+    
     l_scans_options_group = lArgParser.add_argument_group(title="Scans Endpoints Options", description=None)
     l_scans_options_group.add_argument('-turl', '--target-url',
                                  help='The target URL of the scan',
+                                 type=str,
+                                 action='store')
+    l_scans_options_group.add_argument('-sstate', '--scan-state',
+                                 help='The state of the scan',
                                  type=str,
                                  action='store')
 

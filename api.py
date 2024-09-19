@@ -3285,6 +3285,33 @@ class API:
         except Exception as e:
             self.__mPrinter.print("get_scans_by_wesbsite() - {0}".format(str(e)), Level.ERROR)
 
+    
+     # ------------------------------------------------------------
+    # Get Scans by State
+    # ------------------------------------------------------------
+    def __get_scans_by_state(self) -> list:
+        try:
+            l_base_url = "{0}?page={1}&pageSize={2}&scanTaskState={3}".format(
+                self.__cSCANS_LIST_BY_STATE_URL,
+                Parser.page_number, Parser.page_size, Parser.scan_state
+            )
+            return self.__get_paged_data(l_base_url, "scans by state")
+
+        except Exception as e:
+            self.__mPrinter.print("__get_scans_by_state() - {0}".format(str(e)), Level.ERROR)
+
+    def get_scans_by_state(self):
+        try:
+            l_list: list = self.__get_scans_by_state()
+
+            if self.__m_output_format == OutputFormat.JSON.value:
+                print(json.dumps(l_list))
+            elif self.__m_output_format == OutputFormat.CSV.value:
+                self.__print_scans_csv(l_list)
+
+        except Exception as e:
+            self.__mPrinter.print("get_scans_by_state() - {0}".format(str(e)), Level.ERROR)
+
     # ------------------------------------------------------------
     # Get Scans Results by Scan ID
     # ------------------------------------------------------------
