@@ -209,7 +209,7 @@ class API:
     # "Private" class variables
     # ---------------------------------
     __c_TWO_DECIMAL_PLACES: int = 2
-    __c_EASTERN_TIMEZONE = pytz.timezone('US/Eastern')
+    __c_EASTERN_TIMEZONE = pytz.timezone('America/New_York')
     __c_DATETIME_FORMAT = '%m-%d-%Y %H:%M'
 
     __cAPI_KEY_HEADER: str = "Authorization"
