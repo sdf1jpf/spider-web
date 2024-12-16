@@ -3953,7 +3953,7 @@ class API:
         return ["Group Name", "Profile Name", "Target URL", "Issue Name", "CVSS Score",
                 "Severity", "Dev Source", "Scan Date", "Scan Id","AVS", "State", 
                 "First Seen Date", "Remedial Actions", "Remedial Procedure", 
-                "Lookup Id", "Description", "Impact", "Last Seen Date",]
+                "Lookup Id", "Description", "Impact", "Last Seen Date", "Is API",]
 
     def __print_scorecard_csv(self, p_rows: dict) -> None:
         try:

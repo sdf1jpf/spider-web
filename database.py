@@ -222,6 +222,11 @@ class SQLite():
                     SELECT * FROM WebsiteGroups
                     WHERE group_name LIKE 'SDG:%';
 
+                    DROP VIEW IF EXISTS WebsiteAPI;
+                    CREATE VIEW WebsiteAPI AS 
+                    SELECT * FROM WebsiteGroups
+                    WHERE group_name LIKE 'API /%';
+
                     DROP VIEW IF EXISTS WebsiteOnBsc;
                     CREATE VIEW WebsiteOnBsc AS
                     SELECT * FROM WebsiteGroups
@@ -288,11 +293,13 @@ class SQLite():
                             AllIssues.lookup_id,
                             AllIssues.description,
                             AllIssues.impact,
-                            SUBSTR(MIN(AllIssues.last_seen),1,10) as last_seen
+                            SUBSTR(MIN(AllIssues.last_seen),1,10) as last_seen,
+                            WebsiteAPI.group_name AS is_api
                         FROM
                             Scans
                             JOIN AllIssues ON Scans.id = AllIssues.scan_id
                             LEFT JOIN WebsiteSDG ON Scans.website_id = WebsiteSDG.website_id
+                            LEFT JOIN WebsiteAPI ON Scans.website_id = WebsiteAPI.website_id
                             LEFT JOIN DevSource ON Scans.profile_id = DevSource.profile_id
                             LEFT JOIN ExcludeFromReports ON Scans.profile_id = ExcludeFromReports.profile_id
                             LEFT JOIN ProfileAVS ON Scans.profile_id = ProfileAVS.profile_id
@@ -310,7 +317,8 @@ class SQLite():
                             AllIssues.state,
                             AllIssues.remedial_actions,
                             AllIssues.remedial_procedure,
-                            AllIssues.lookup_id
+                            AllIssues.lookup_id,
+                            WebsiteAPI.group_name
 
                         UNION
 
@@ -332,11 +340,13 @@ class SQLite():
                             '' AS lookup_id,
                             '' AS description,
                             '' AS impact,
-                            '' as last_seen
+                            '' as last_seen,
+                            WebsiteAPI.group_name AS is_api
                         FROM
                             Scans
                             LEFT JOIN TrackedIssues ON Scans.profile_name = TrackedIssues.profile_name
                             LEFT JOIN WebsiteSDG ON Scans.website_id = WebsiteSDG.website_id
+                            LEFT JOIN WebsiteAPI ON Scans.website_id = WebsiteAPI.website_id
                             LEFT JOIN DevSource ON Scans.profile_id = DevSource.profile_id
                             LEFT JOIN ExcludeFromReports ON Scans.profile_id = ExcludeFromReports.profile_id
                             LEFT JOIN ProfileAVS ON Scans.profile_id = ProfileAVS.profile_id
@@ -352,7 +362,8 @@ class SQLite():
                             TrackedIssues.cvss_value,
                             TrackedIssues.cvss_severity,
                             DevSource.tag,
-                            scan_id
+                            scan_id,
+                            WebsiteAPI.group_name
                         ORDER BY WebsiteSDG.group_name, Scans.profile_name
                 """
             SQLite.__execute_script(l_connection, l_query)
@@ -726,11 +737,13 @@ class SQLite():
                     AllIssues.lookup_id,
                     AllIssues.description,
                     AllIssues.impact,
-                    SUBSTR(MIN(AllIssues.last_seen),1,10) as last_seen
+                    SUBSTR(MIN(AllIssues.last_seen),1,10) as last_seen,
+                    WebsiteAPI.group_name AS is_api
                 FROM
                     Scans
                     JOIN AllIssues ON Scans.id = AllIssues.scan_id
                     LEFT JOIN WebsiteSDG ON Scans.website_id = WebsiteSDG.website_id
+                    LEFT JOIN WebsiteAPI ON Scans.website_id = WebsiteAPI.website_id
                     LEFT JOIN DevSource ON Scans.profile_id = DevSource.profile_id
                     LEFT JOIN ExcludeFromReports ON Scans.profile_id = ExcludeFromReports.profile_id
                     LEFT JOIN ProfileAVS ON Scans.profile_id = ProfileAVS.profile_id
@@ -748,7 +761,8 @@ class SQLite():
                     AllIssues.state,
                     AllIssues.remedial_actions,
                     AllIssues.remedial_procedure,
-                    AllIssues.lookup_id
+                    AllIssues.lookup_id,
+                    WebsiteAPI.group_name
 
                 UNION
 
@@ -770,11 +784,13 @@ class SQLite():
                     '' AS lookup_id,
                     '' AS description,
                     '' AS impact,
-                    '' as last_seen
+                    '' as last_seen,
+                    WebsiteAPI.group_name AS is_api
                 FROM
                     Scans
                     LEFT JOIN TrackedIssues ON Scans.profile_name = TrackedIssues.profile_name
                     LEFT JOIN WebsiteSDG ON Scans.website_id = WebsiteSDG.website_id
+                    LEFT JOIN WebsiteAPI ON Scans.website_id = WebsiteAPI.website_id
                     LEFT JOIN DevSource ON Scans.profile_id = DevSource.profile_id
                     LEFT JOIN ExcludeFromReports ON Scans.profile_id = ExcludeFromReports.profile_id
                     LEFT JOIN ProfileAVS ON Scans.profile_id = ProfileAVS.profile_id
@@ -790,7 +806,8 @@ class SQLite():
                     TrackedIssues.cvss_value,
                     TrackedIssues.cvss_severity,
                     DevSource.tag,
-                    scan_id
+                    scan_id,
+                    WebsiteAPI.group_name
                 ORDER BY WebsiteSDG.group_name, Scans.profile_name
             """
             return SQLite.__execute_query(l_connection, l_query)
