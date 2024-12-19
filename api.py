@@ -704,6 +704,12 @@ class API:
 
             l_http_response = self.__connect_to_api(l_base_url)
             self.__mPrinter.print("Parsing fetched content: {}".format(l_http_response.text), Level.DEBUG)
+            
+            if l_http_response.status_code == 429:
+                self.__mPrinter.print("Received 429 response (Too many requests), sleeping for 1 minute", Level.WARNING)
+                time.sleep(60)
+                return self.__get_next_page(p_base_url, p_json)
+            
             l_json = json.loads(l_http_response.text)
 
             l_list: list = l_json["List"]
